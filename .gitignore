@@ -1,0 +1,28 @@
+# Entornos virtuales de Python
+.venv/
+venv/
+env/
+.entRCV/
+
+# Caché de Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Sistema
+.DS_Store
+Thumbs.db
+
+# Medios pesados y comprimidos redundantes
+*.mp4
+*.zip
+
+Clase/Project/PIIA_UsoInternetNinos/
+Entrgables Rubricas/Taller práctico git y github/ETLInfrati/
+Sesion 4/predict_bad_rate/
+Clase/Project/.entPIIA/
+Clase/Project/child-mind-institute-problematic-internet-use/

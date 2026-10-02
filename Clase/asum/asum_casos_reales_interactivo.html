@@ -1,0 +1,1153 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Casos Reales Interactivos - ASUM Deploy</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            padding: 40px 20px;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        .title {
+            text-align: center;
+            font-size: 36px;
+            font-weight: 700;
+            color: #2c3e50;
+            margin-bottom: 15px;
+        }
+        
+        .subtitle {
+            text-align: center;
+            font-size: 16px;
+            color: #666;
+            margin-bottom: 40px;
+        }
+        
+        /* Tabs */
+        .tabs-container {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 40px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        
+        .tab-button {
+            padding: 12px 24px;
+            border: none;
+            background: white;
+            color: #667eea;
+            font-size: 14px;
+            font-weight: 600;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .tab-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+        
+        .tab-button.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        
+        /* Content Tabs */
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        /* Cases Grid */
+        .cases-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+        
+        .case-card {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border-left: 5px solid #667eea;
+        }
+        
+        .case-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        }
+        
+        .case-header {
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        
+        .case-company {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+        
+        .case-industry {
+            font-size: 12px;
+            opacity: 0.9;
+        }
+        
+        .case-body {
+            padding: 20px;
+        }
+        
+        .case-problem {
+            font-size: 13px;
+            color: #666;
+            margin-bottom: 15px;
+            line-height: 1.6;
+        }
+        
+        .case-button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 10px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        
+        .case-button:hover {
+            transform: scale(1.05);
+        }
+        
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.6);
+            z-index: 1000;
+            overflow-y: auto;
+            padding: 20px;
+        }
+        
+        .modal.active {
+            display: flex;
+            align-items: flex-start;
+            justify-content: center;
+            padding-top: 40px;
+        }
+        
+        .modal-content {
+            background: white;
+            border-radius: 12px;
+            max-width: 900px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            animation: slideDown 0.3s ease;
+        }
+        
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .modal-header {
+            padding: 30px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .modal-title {
+            font-size: 24px;
+            font-weight: 700;
+        }
+        
+        .close-btn {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 28px;
+            cursor: pointer;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .modal-body {
+            padding: 30px;
+        }
+        
+        .section {
+            margin-bottom: 25px;
+        }
+        
+        .section-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: #2c3e50;
+            margin-bottom: 12px;
+            border-bottom: 2px solid #667eea;
+            padding-bottom: 8px;
+        }
+        
+        .section-content {
+            font-size: 14px;
+            color: #555;
+            line-height: 1.8;
+        }
+        
+        .timeline {
+            position: relative;
+            padding: 20px 0;
+        }
+        
+        .timeline-item {
+            display: flex;
+            margin-bottom: 20px;
+            position: relative;
+            padding-left: 40px;
+        }
+        
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 5px;
+            width: 20px;
+            height: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 50%;
+            border: 3px solid white;
+            box-shadow: 0 0 0 3px #667eea;
+        }
+        
+        .timeline-item::after {
+            content: '';
+            position: absolute;
+            left: 8px;
+            top: 25px;
+            width: 2px;
+            height: calc(100% + 10px);
+            background: #e0e0e0;
+        }
+        
+        .timeline-item:last-child::after {
+            display: none;
+        }
+        
+        .timeline-time {
+            font-weight: 700;
+            color: #667eea;
+            min-width: 70px;
+            font-size: 13px;
+        }
+        
+        .timeline-text {
+            font-size: 13px;
+            color: #555;
+        }
+        
+        .result-box {
+            background: #f0f4ff;
+            border-left: 4px solid #667eea;
+            padding: 15px;
+            border-radius: 6px;
+            margin-top: 15px;
+        }
+        
+        .result-title {
+            font-weight: 700;
+            color: #667eea;
+            margin-bottom: 8px;
+        }
+        
+        .result-item {
+            font-size: 13px;
+            color: #555;
+            margin-bottom: 5px;
+        }
+        
+        .metric {
+            display: inline-block;
+            background: white;
+            padding: 8px 12px;
+            border-radius: 6px;
+            margin: 5px 5px 5px 0;
+            border: 1px solid #667eea;
+            font-size: 12px;
+            font-weight: 600;
+            color: #667eea;
+        }
+        
+        @media (max-width: 768px) {
+            .title {
+                font-size: 24px;
+            }
+            
+            .cases-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .modal-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+            }
+            
+            .close-btn {
+                position: absolute;
+                top: 10px;
+                right: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="title">📊 Casos Reales Interactivos</h1>
+        <p class="subtitle">Haz clic en un caso para ver los detalles completos de cómo operan las empresas</p>
+        
+        <!-- Tabs -->
+        <div class="tabs-container">
+            <button class="tab-button active" onclick="switchTab('soporte')">
+                📞 Soporte (On-call)
+            </button>
+            <button class="tab-button" onclick="switchTab('mantenimiento')">
+                🔧 Mantenimiento
+            </button>
+            <button class="tab-button" onclick="switchTab('monitoreo')">
+                👁️ Monitoreo
+            </button>
+        </div>
+        
+        <!-- SOPORTE TAB -->
+        <div id="soporte" class="tab-content active">
+            <div class="cases-grid">
+                <!-- Caso 1: Banco -->
+                <div class="case-card" onclick="openModal('banco-fraude')">
+                    <div class="case-header">
+                        <div class="case-company">Banco Internacional</div>
+                        <div class="case-industry">Sistema de Detección de Fraude</div>
+                    </div>
+                    <div class="case-body">
+                        <div class="case-problem">
+                            🚨 500K transacciones/día • Criticidad MÁXIMA • Pérdidas directas de dinero
+                        </div>
+                        <button class="case-button">Ver Detalles →</button>
+                    </div>
+                </div>
+                
+                <!-- Caso 2: E-commerce -->
+                <div class="case-card" onclick="openModal('ecommerce-recomendaciones')">
+                    <div class="case-header">
+                        <div class="case-company">Plataforma E-commerce</div>
+                        <div class="case-industry">Sistema de Recomendaciones</div>
+                    </div>
+                    <div class="case-body">
+                        <div class="case-problem">
+                            🛍️ 50M usuarios activos • Criticidad ALTA • 35% de ingresos
+                        </div>
+                        <button class="case-button">Ver Detalles →</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- MANTENIMIENTO TAB -->
+        <div id="mantenimiento" class="tab-content">
+            <div class="cases-grid">
+                <!-- Caso 3: Netflix -->
+                <div class="case-card" onclick="openModal('netflix-reentrenamiento')">
+                    <div class="case-header">
+                        <div class="case-company">Netflix</div>
+                        <div class="case-industry">Reentrenamiento de Recomendaciones</div>
+                    </div>
+                    <div class="case-body">
+                        <div class="case-problem">
+                            🎬 230M suscriptores • Reentrenamiento semanal • Zero downtime
+                        </div>
+                        <button class="case-button">Ver Detalles →</button>
+                    </div>
+                </div>
+                
+                <!-- Caso 4: Uber -->
+                <div class="case-card" onclick="openModal('uber-matching')">
+                    <div class="case-header">
+                        <div class="case-company">Uber</div>
+                        <div class="case-industry">Algoritmo de Matching</div>
+                    </div>
+                    <div class="case-body">
+                        <div class="case-problem">
+                            🚗 1B viajes/año • Matching conductor-pasajero • 24/7 operación
+                        </div>
+                        <button class="case-button">Ver Detalles →</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- MONITOREO TAB -->
+        <div id="monitoreo" class="tab-content">
+            <div class="cases-grid">
+                <!-- Caso 5: Spotify -->
+                <div class="case-card" onclick="openModal('spotify-drift')">
+                    <div class="case-header">
+                        <div class="case-company">Spotify</div>
+                        <div class="case-industry">Detección de Data Drift</div>
+                    </div>
+                    <div class="case-body">
+                        <div class="case-problem">
+                            🎵 Tendencias cambian • K-pop trend • Drift detection en 58 min
+                        </div>
+                        <button class="case-button">Ver Detalles →</button>
+                    </div>
+                </div>
+                
+                <!-- Caso 6: Amazon -->
+                <div class="case-card" onclick="openModal('amazon-covid')">
+                    <div class="case-header">
+                        <div class="case-company">Amazon</div>
+                        <div class="case-industry">Predicción de Demanda (COVID)</div>
+                    </div>
+                    <div class="case-body">
+                        <div class="case-problem">
+                            📦 Pandemia cambió patrones • Salvó $100M • Detección crítica
+                        </div>
+                        <button class="case-button">Ver Detalles →</button>
+                    </div>
+                </div>
+                
+                <!-- Caso 7: Google Maps -->
+                <div class="case-card" onclick="openModal('google-maps-trafico')">
+                    <div class="case-header">
+                        <div class="case-company">Google Maps</div>
+                        <div class="case-industry">Predicción de Tráfico</div>
+                    </div>
+                    <div class="case-body">
+                        <div class="case-problem">
+                            🗺️ 1T solicitudes/año • Detección de accidentes • 50M horas ahorradas
+                        </div>
+                        <button class="case-button">Ver Detalles →</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- MODALS -->
+    
+    <!-- Banco Fraude Modal -->
+    <div id="modal-banco-fraude" class="modal" onclick="closeModal(event, 'banco-fraude')">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <div class="modal-header">
+                <div>
+                    <div class="modal-title">🏦 Banco Internacional</div>
+                    <p style="font-size: 13px; margin-top: 5px;">Sistema de Detección de Fraude</p>
+                </div>
+                <button class="close-btn" onclick="closeModal(null, 'banco-fraude')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="section">
+                    <div class="section-title">📍 Contexto</div>
+                    <div class="section-content">
+                        • 500,000 transacciones procesadas diariamente<br>
+                        • Sistema previene fraudes en tiempo real<br>
+                        • Criticidad: <strong>MÁXIMA</strong> (pérdidas directas de dinero)
+                    </div>
+                </div>
+                
+                <div class="section">
+                    <div class="section-title">👥 Estructura de On-call Real</div>
+                    <div class="section-content">
+                        <strong>Lunes-Viernes:</strong><br>
+                        • 8:00 - 17:00 → 2 especialistas en oficina<br>
+                        • 17:00 - 22:00 → 1 en oficina + 1 remoto<br>
+                        • 22:00 - 8:00 → 2 en remoto<br><br>
+                        
+                        <strong>Fines de semana:</strong><br>
+                        • 8:00 - 17:00 → 1 especialista en oficina<br>
+                        • 17:00 - 8:00 → 1 especialista remoto
+                    </div>
+                </div>
+                
+                <div class="section">
+                    <div class="section-title">⚡ Caso Real de Incidencia</div>
+                    <div class="timeline">
+                        <div class="timeline-item">
+                            <div class="timeline-time">14:35</div>
+                            <div class="timeline-text">Sistema alerta: Accuracy bajó de 96% a 89% en 2 horas</div>
+                        </div>
+                        <div class="timeline-item">
+                            <div class="timeline-time">14:36</div>
+                            <div class="timeline-text">Especialista nivel 1 recibe pager de alerta</div>
+                        </div>
+                        <div class="timeline-item">
+                            <div class="timeline-time">14:38</div>
+                            <div class="timeline-text">Identifica: Patrón de fraude nuevo no visto en entrenamiento</div>
+                        </div>
+                        <div class="timeline-item">
+                            <div class="timeline-time">14:40</div>
+                            <div class="timeline-text">Activa rollback a modelo v2.3.1 (versión anterior)</div>
+                        </div>
+                        <div class="timeline-item">
+                            <div class="timeline-time">14:41</div>
+                            <div class="timeline-text">Sistema restaurado, accuracy vuelve a 96%</div>
+                        </div>
+                        <div class="timeline-item">
+                            <div class="timeline-time">14:45</div>
+                            <div class="timeline-text">Crea ticket para Data Science: reentrenar con nuevos patrones</div>
+                        </div>
+                        <div class="timeline-item">
+                            <div class="timeline-time">14:50</div>
+                            <div class="timeline-text">Resolución completada</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="result-box">
+                    <div class="result-title">📈 Resultados</div>
+                    <div class="result-item">✓ MTTR (Mean Time To Recovery): 15 minutos</div>
+                    <div class="result-item">✓ SLA target: < 30 minutos <span style="color: green; font-weight: bold;">CUMPLIDO</span></div>
+                    <div class="result-item">✓ Fraudes prevenidos durante la incidencia: 847</div>
+                    <div class="result-item">✓ Pérdidas evitadas: $1.2 millones</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- E-commerce Modal -->
+    <div id="modal-ecommerce-recomendaciones" class="modal" onclick="closeModal(event, 'ecommerce-recomendaciones')">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <div class="modal-header">
+                <div>
+                    <div class="modal-title">🛍️ Plataforma E-commerce</div>
+                    <p style="font-size: 13px; margin-top: 5px;">Sistema de Recomendaciones - On-call 24/7</p>
+                </div>
+                <button class="close-btn" onclick="closeModal(null, 'ecommerce-recomendaciones')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="section">
+                    <div class="section-title">📍 Contexto</div>
+                    <div class="section-content">
+                        • 50 millones de usuarios activos mensuales<br>
+                        • Modelo de recomendación genera 35% de ingresos<br>
+                        • Criticidad: <strong>ALTA</strong> (impacto directo en conversión)
+                    </div>
+                </div>
+                
+                <div class="section">
+                    <div class="section-title">🌍 Estructura Global de On-call</div>
+                    <div class="section-content">
+                        <strong>LATAM (UTC-5):</strong> Horario pico 20:00-23:00 | 3 ingenieros<br>
+                        <strong>Europe (UTC+1):</strong> Horario pico 18:00-22:00 | 2 ingenieros<br>
+                        <strong>Asia (UTC+8):</strong> Horario pico 19:00-23:00 | 2 ingenieros<br><br>
+                        Comunicación: Slack + PagerDuty (escalación automática)
+                    </div>
+                </div>
+                
+                <div class="section">
+                    <div class="section-title">⚡ Incidencia Real: Sábado 22:15 (Hora Europea)</div>
+                    <div class="timeline">
+                        <div class="timeline-item">
+                            <div class="timeline-time">22:15</div>
+                            <div class="timeline-text">Error en API de recomendaciones</div>
+                        </div>
+                        <div class="timeline-item">
+                            <div class="timeline-time">22:16</div>
+                            <div class="timeline-text">Alerta: Error rate subió a 8% (threshold: 2%)</div>
+                        </div>
+                        <div class="timeline-item">
+                            <div class="timeline-time">22:17</div>
+                            <div class="timeline-text">App móvil falló en mostrar recomendaciones</div>
+                        </div>
+                        <div class="timeline-item">
+                            <div class="timeline-time">22:18</div>
+                            <div class="timeline-text">Ingeniero Europa recibe notificación en PagerDuty</div>
+                        </div>
+                        <div class="timeline-item">
+                            <div class="timeline-time">22:19</div>
+                            <div class="timeline-text">Diagnóstico: Database connection timeout</div>
+                        </div>
+                        <div class="timeline-item">
+                            <div class="timeline-time">22:21</div>
+                            <div class="timeline-text">Reinicia pool de conexiones</div>
+                        </div>
+                        <div class="timeline-item">
+                            <div class="timeline-time">22:22</div>
+                            <div class="timeline-text">✓ Sistema normalizado, API respondiendo</div>
+                        </div>
+                        <div class="timeline-item">
+                            <div class="timeline-time">22:25</div>
+                            <div class="timeline-text">Crea post-mortem para evitar recurrencia</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="result-box">
+                    <div class="result-title">📈 Resultados del Incidente</div>
+                    <div class="result-item">✓ MTTR: 10 minutos</div>
+                    <div class="result-item">✓ Usuarios afectados: ~2 millones (16% del tráfico activo)</div>
+                    <div class="result-item">✓ Impacto en conversión: -0.8% durante ese periodo</div>
+                    <div class="result-item">✓ Revenue perdido: ~$45K (recuperado luego)</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Netflix Modal -->
+    <div id="modal-netflix-reentrenamiento" class="modal" onclick="closeModal(event, 'netflix-reentrenamiento')">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <div class="modal-header">
+                <div>
+                    <div class="modal-title">🎬 Netflix</div>
+                    <p style="font-size: 13px; margin-top: 5px;">Reentrenamiento de Recomendaciones - Zero Downtime</p>
+                </div>
+                <button class="close-btn" onclick="closeModal(null, 'netflix-reentrenamiento')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="section">
+                    <div class="section-title">📍 Contexto</div>
+                    <div class="section-content">
+                        • 230 millones de suscriptores<br>
+                        • Modelo de recomendación aprende patrones de visualización<br>
+                        • Criticidad: OPERACIONAL (no emergencia, pero crítica)
+                    </div>
+                </div>
+                
+                <div class="section">
+                    <div class="section-title">📅 Calendario de Mantenimiento</div>
+                    <div class="section-content">
+                        <strong>Cada LUNES 02:00 UTC → Reentrenamiento Semanal</strong><br>
+                        • Duración: 2-3 horas<br>
+                        • Datos: Última semana de visualizaciones<br>
+                        • Usuarios afectados: 0 (modelo sigue funcionando)<br><br>
+                        
+                        <strong>Primer JUEVES del mes 03:00 UTC → Reentrenamiento Completo</strong><br>
+                        • Duración: 6-8 horas<br>
+                        • Datos: Últimos 3 meses<br>
+                        • Estrategia: Blue-green deployment<br><br>
+                        
+                        <strong>Cada TRIMESTRE 01:00 UTC → Mantenimiento Infraestructura</strong><br>
+                        • Actualización de librerías (TensorFlow, PyTorch)<br>
+                        • Parches de seguridad<br>
+                        • Rotación de certificados SSL
+                    </div>
+                </div>
+                
+                <div class="section">
+                    <div class="section-title">⚡ Ejecución Real: Lunes 02:00 UTC</div>
+                    <div class="timeline">
+                        <div class="timeline-item">
+                            <div class="timeline-time">02:00</div>
+                            <div class="timeline-text">Comienza snapshot de datos de última semana</div>
+                        </div>
+                        <div class="timeline-item">
+                            <div class="timeline-time">02:15</div>
+                            <div class="timeline-text">Datos cargados: 50GB de logs de visualización</div>
+                        </div>
+                        <div class="timeline-item">
+                            <div class="timeline-time">02:30</div>
+                            <div class="timeline-text">Modelo comienza entrenamiento en GPU cluster</div>
+                        </div>
+                        <div class="timeline-item">
+                            <div class="timeline-time">04:15</div>
+                            <div class="timeline-text">✓ Entrenamiento completado</div>
+                        </div>
+                        <div class="timeline-item">
+                            <div class="timeline-time">04:20</div>
+                            <div class="timeline-text">Validación automática: Accuracy 89.2% vs 89.1% anterior ✓</div>
+                        </div>
+                        <div class="timeline-item">
+                            <div class="timeline-time">04:25</div>
+                            <div class="timeline-text">Canary deployment: 1% del tráfico a nuevo modelo</div>
+                        </div>
+                        <div class="timeline-item">
+                            <div class="timeline-time">04:35</div>
+                            <div class="timeline-text">Monitoreo 10 min: Métricas similares ✓</div>
+                        </div>
+                        <div class="timeline-item">
+                            <div class="timeline-time">04:40</div>
+                            <div class="timeline-text">Rollout gradual: 10% → 50% → 100%</div>
+                        </div>
+                        <div class="timeline-item">
+                            <div class="timeline-time">05:00</div>
+                            <div class="timeline-text">✓ Completado, nuevo modelo en 100% producción</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="result-box">
+                    <div class="result-title">📈 Resultados</div>
+                    <div class="result-item">✓ Tiempo total: 3 horas</div>
+                    <div class="result-item">✓ Mejora en accuracy: +0.1%</div>
+                    <div class="result-item">✓ Usuarios impactados: 0 (cero downtime)</div>
+                    <div class="result-item">✓ Satisfacción de usuarios: Recomendaciones mejoraron 2%</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Uber Modal -->
+    <div id="modal-uber-matching" class="modal" onclick="closeModal(event, 'uber-matching')">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <div class="modal-header">
+                <div>
+                    <div class="modal-title">🚗 Uber</div>
+                    <p style="font-size: 13px; margin-top: 5px;">Algoritmo de Matching Conductor-Pasajero</p>
+                </div>
+                <button class="close-btn" onclick="closeModal(null, 'uber-matching')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="section">
+                    <div class="section-title">📍 Contexto</div>
+                    <div class="section-content">
+                        • 1 billón de viajes por año<br>
+                        • Modelo de matching es crítico para negocio<br>
+                        • Debe funcionar 24/7 sin interrupciones
+                    </div>
+                </div>
+                
+                <div class="section">
+                    <div class="section-title">🔄 Arquitectura de Mantenimiento Sin Downtime</div>
+                    <div class="section-content">
+                        <strong>Tres Modelos en Producción:</strong><br>
+                        • Modelo A: Versión estable (100% tráfico)<br>
+                        • Modelo B: Prueba en producción (10% tráfico)<br>
+                        • Modelo C: En desarrollo (ambiente test)<br><br>
+                        
+                        <strong>Ciclo de 2 semanas:</strong><br>
+                        Semana 1: Entrenar → Validar → Canary (2%)<br>
+                        Semana 2: Escalar → Analizar → Promover
+                    </div>
+                </div>
+                
+                <div class="section">
+                    <div class="section-title">⚡ Caso Real: Semana Normal</div>
+                    <div class="timeline">
+                        <div class="timeline-item">
+                            <div class="timeline-time">Lunes</div>
+                            <div class="timeline-text">Entrena Modelo C con datos últimas 2 semanas</div>
+                        </div>
+                        <div class="timeline-item">
+                            <div class="timeline-time">Mar-Mié</div>
+                            <div class="timeline-text">Validación exhaustiva en ambiente de test</div>
+                        </div>
+                        <div class="timeline-item">
+                            <div class="timeline-time">Jueves</div>
+                            <div class="timeline-text">Deploy Modelo C como canary (2% tráfico)</div>
+                        </div>
+                        <div class="timeline-item">
+                            <div class="timeline-time">Viernes</div>
+                            <div class="timeline-text">Si OK → Escalar a 10%, Modelo C → Modelo B</div>
+                        </div>
+                        <div class="timeline-item">
+                            <div class="timeline-time">Sig. Lunes</div>
+                            <div class="timeline-text">Análisis profundo vs Modelo A (50% tráfico)</div>
+                        </div>
+                        <div class="timeline-item">
+                            <div class="timeline-time">Sig. Martes</div>
+                            <div class="timeline-text">Si mejora >2%: Promover a 100% (Modelo B → A)</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="section">
+                    <div class="section-title">🚨 Caso Especial: Viernes Huracán en Miami</div>
+                    <div class="timeline">
+                        <div class="timeline-item">
+                            <div class="timeline-time">18:00</div>
+                            <div class="timeline-text">Alerta: Huracán azota Miami</div>
+                        </div>
+                        <div class="timeline-item">
+                            <div class="timeline-time">18:15</div>
+                            <div class="timeline-text">Patrones de demanda cambian drásticamente</div>
+                        </div>
+                        <div class="timeline-item">
+                            <div class="timeline-time">18:30</div>
+                            <div class="timeline-text">Urgencia: Algoritmo aún usa patrones pre-huracán</div>
+                        </div>
+                        <div class="timeline-item">
+                            <div class="timeline-time">18:45</div>
+                            <div class="timeline-text">Reentrenamiento express (30 min) con datos recientes</div>
+                        </div>
+                        <div class="timeline-item">
+                            <div class="timeline-time">19:15</div>
+                            <div class="timeline-text">Deploy como canary inmediato</div>
+                        </div>
+                        <div class="timeline-item">
+                            <div class="timeline-time">19:30</div>
+                            <div class="timeline-text">✓ Resultados mejores, matching optimizado para huracán</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="result-box">
+                    <div class="result-title">📈 Resultados por Ciclo</div>
+                    <div class="result-item">✓ Reducción de 40% en tiempo promedio de espera</div>
+                    <div class="result-item">✓ ROI: +2% en cada release</div>
+                    <div class="result-item">✓ Satisfacción de usuario: Consistente 4.8/5</div>
+                    <div class="result-item">✓ Caso huracán: Satisfacción subió 5% durante crisis</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Spotify Modal -->
+    <div id="modal-spotify-drift" class="modal" onclick="closeModal(event, 'spotify-drift')">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <div class="modal-header">
+                <div>
+                    <div class="modal-title">🎵 Spotify</div>
+                    <p style="font-size: 13px; margin-top: 5px;">Detección de Data Drift - K-pop Trend</p>
+                </div>
+                <button class="close-btn" onclick="closeModal(null, 'spotify-drift')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="section">
+                    <div class="section-title">📍 Contexto</div>
+                    <div class="section-content">
+                        • Modelo entrenado 3 meses atrás<br>
+                        • Patrones de música cambian con estaciones y trends<br>
+                        • Criticidad: MEDIA (importante pero no emergencia)
+                    </div>
+                </div>
+                
+                <div class="section">
+                    <div class="section-title">📊 Dashboard de Monitoreo</div>
+                    <div class="section-content">
+                        <strong>Métricas en Tiempo Real:</strong><br>
+                        • Model Accuracy: 88.5% (Target: 90%) ⚠️<br>
+                        • Data Drift Score: 0.62 (Threshold: 0.5) 🔴<br>
+                        • Prediction Latency: 45ms (Target: <50ms) ✓<br>
+                        • Error Rate: 0.3% (Target: <1%) ✓
+                    </div>
+                </div>
+                
+                <div class="section">
+                    <div class="section-title">⚡ Línea de Tiempo Real: 14:32 - 16:30</div>
+                    <div class="timeline">
+                        <div class="timeline-item">
+                            <div class="timeline-time">14:32</div>
+                            <div class="timeline-text">🔴 ALERTA CRÍTICA: Accuracy bajó a 86.8% (< 87%)</div>
+                        </div>
+                        <div class="timeline-item">
+                            <div class="timeline-time">15:04</div>
+                            <div class="timeline-text">⚠️ WARNING: Data drift score > 0.5</div>
+                        </div>
+                        <div class="timeline-item">
+                            <div class="timeline-time">15:15</div>
+                            <div class="timeline-text">Análisis: "Preferencias de género K-pop aumentaron 45%"</div>
+                        </div>
+                        <div class="timeline-item">
+                            <div class="timeline-time">15:32</div>
+                            <div class="timeline-text">Data Scientist recibe notificación automática</div>
+                        </div>
+                        <div class="timeline-item">
+                            <div class="timeline-time">15:35</div>
+                            <div class="timeline-text">Comienza análisis: ¿Por qué cambió el comportamiento?</div>
+                        </div>
+                        <div class="timeline-item">
+                            <div class="timeline-time">15:40</div>
+                            <div class="timeline-text">Descubre: Premio Grammy ganó banda K-pop</div>
+                        </div>
+                        <div class="timeline-item">
+                            <div class="timeline-time">15:50</div>
+                            <div class="timeline-text">Decide: Reentrenar modelo con últimos 2 días</div>
+                        </div>
+                        <div class="timeline-item">
+                            <div class="timeline-time">16:10</div>
+                            <div class="timeline-text">✓ Modelo reentrenado, accuracy = 91.2%</div>
+                        </div>
+                        <div class="timeline-item">
+                            <div class="timeline-time">16:15</div>
+                            <div class="timeline-text">Deploy como canary (2% tráfico)</div>
+                        </div>
+                        <div class="timeline-item">
+                            <div class="timeline-time">16:25</div>
+                            <div class="timeline-text">Métricas OK, escalar a 100%</div>
+                        </div>
+                        <div class="timeline-item">
+                            <div class="timeline-time">16:30</div>
+                            <div class="timeline-text">✓ Crisis resuelta, sistema normal</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="result-box">
+                    <div class="result-title">📈 Resultados</div>
+                    <div class="result-item">✓ Tiempo total de degradación: 58 minutos</div>
+                    <div class="result-item">✓ Accuracy restaurada: 91.2% (vs 86.8%)</div>
+                    <div class="result-item">✓ Usuarios sin recomendación óptima: ~500K</div>
+                    <div class="result-item">✓ Lección: Monitoreo detectó problema automáticamente</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Amazon Modal -->
+    <div id="modal-amazon-covid" class="modal" onclick="closeModal(event, 'amazon-covid')">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <div class="modal-header">
+                <div>
+                    <div class="modal-title">📦 Amazon</div>
+                    <p style="font-size: 13px; margin-top: 5px;">Predicción de Demanda - Cambio por COVID-19</p>
+                </div>
+                <button class="close-btn" onclick="closeModal(null, 'amazon-covid')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="section">
+                    <div class="section-title">📍 Contexto</div>
+                    <div class="section-content">
+                        • Predice qué productos se venderán (decisiones de inventario)<br>
+                        • Afecta 200+ centros logísticos<br>
+                        • Criticidad: CRÍTICA (impacto de millones en pérdidas)
+                    </div>
+                </div>
+                
+                <div class="section">
+                    <div class="section-title">📚 Modelo Histórico (Antes de COVID)</div>
+                    <div class="section-content">
+                        <strong>Datos de entrenamiento: 2010-2019</strong><br>
+                        • Patrón: Compra regular y predecible<br>
+                        • Picos: Navidad, Black Friday<br>
+                        • Accuracy: 94%<br>
+                        • Comportamiento: Relativamente estable
+                    </div>
+                </div>
+                
+                <div class="section">
+                    <div class="section-title">🦠 Crisis: 12 de Marzo 2020 (Confinamiento)</div>
+                    <div class="timeline">
+                        <div class="timeline-item">
+                            <div class="timeline-time">03:15</div>
+                            <div class="timeline-text">🔴 Alerta: Data drift score = 2.8 (EXTREMO)</div>
+                        </div>
+                        <div class="timeline-item">
+                            <div class="timeline-time">08:30</div>
+                            <div class="timeline-text">🔴 Accuracy colapsó a 52% (bajó de 94%)</div>
+                        </div>
+                        <div class="timeline-item">
+                            <div class="timeline-time">10:45</div>
+                            <div class="timeline-text">🔴 Inventory mismatch: 40% (muy alto)</div>
+                        </div>
+                        <div class="timeline-item">
+                            <div class="timeline-time">11:00</div>
+                            <div class="timeline-text">Equipo alertado de la crisis</div>
+                        </div>
+                        <div class="timeline-item">
+                            <div class="timeline-time">11:30</div>
+                            <div class="timeline-text">Emergency meeting: Analizan causa</div>
+                        </div>
+                        <div class="timeline-item">
+                            <div class="timeline-time">12:00</div>
+                            <div class="timeline-text">Comprenden: Cambio radical de comportamiento por pandemia</div>
+                        </div>
+                        <div class="timeline-item">
+                            <div class="timeline-time">12:30</div>
+                            <div class="timeline-text">Nuevas compras: Papel higienico ↑ 500%, jabón ↑ 300%</div>
+                        </div>
+                        <div class="timeline-item">
+                            <div class="timeline-time">13:00</div>
+                            <div class="timeline-text">Reentrenamiento urgente con últimas 48 horas</div>
+                        </div>
+                        <div class="timeline-item">
+                            <div class="timeline-time">14:30</div>
+                            <div class="timeline-text">✓ Modelo reentrenado, accuracy = 78%</div>
+                        </div>
+                        <div class="timeline-item">
+                            <div class="timeline-time">15:00</div>
+                            <div class="timeline-text">Deploy en producción</div>
+                        </div>
+                        <div class="timeline-item">
+                            <div class="timeline-time">16:00</div>
+                            <div class="timeline-text">✓ Accuracy mejora a 81%, se estabiliza</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="result-box">
+                    <div class="result-title">💰 Impacto Financiero</div>
+                    <div class="result-item">❌ Sin monitoreo: Hubiera perdido ~$100M en inventario equivocado</div>
+                    <div class="result-item">✓ Con monitoreo: Detectaron en 8 horas, minimizaron pérdidas a $2-3M</div>
+                    <div class="result-item">✓ Lección: Monitoreo proactivo salvó la operación</div>
+                    <div class="result-item">✓ Acción post-crisis: Modelo ahora se reajusta automáticamente</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Google Maps Modal -->
+    <div id="modal-google-maps-trafico" class="modal" onclick="closeModal(event, 'google-maps-trafico')">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <div class="modal-header">
+                <div>
+                    <div class="modal-title">🗺️ Google Maps</div>
+                    <p style="font-size: 13px; margin-top: 5px;">Predicción de Tráfico en Tiempo Real</p>
+                </div>
+                <button class="close-btn" onclick="closeModal(null, 'google-maps-trafico')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="section">
+                    <div class="section-title">📍 Contexto</div>
+                    <div class="section-content">
+                        • 1 billón de solicitudes de predicción al año<br>
+                        • Afecta decisiones de 2 billones de viajes anuales<br>
+                        • Criticidad: CRÍTICA (experiencia de usuario)
+                    </div>
+                </div>
+                
+                <div class="section">
+                    <div class="section-title">📊 SLAs en Tiempo Real</div>
+                    <div class="section-content">
+                        <div class="metric">Disponibilidad: 99.99% ✓</div>
+                        <div class="metric">Latencia p99: 145ms (Target: <200ms) ✓</div>
+                        <div class="metric">Accuracy: 94.2% (Target: >92%) ✓</div>
+                        <div class="metric">Error rate: 0.02% (Target: <0.1%) ✓</div>
+                        <div class="metric">Data freshness: 2.3 min (Target: <5 min) ✓</div>
+                    </div>
+                </div>
+                
+                <div class="section">
+                    <div class="section-title">⚡ Caso Real: Viernes 15 Marzo 2023 (5:30 PM)</div>
+                    <div class="timeline">
+                        <div class="timeline-item">
+                            <div class="timeline-time">17:30</div>
+                            <div class="timeline-text">Accidente automovilístico cierra autopista principal en NY</div>
+                        </div>
+                        <div class="timeline-item">
+                            <div class="timeline-time">17:31</div>
+                            <div class="timeline-text">Sistema: Datos recientes en procesamiento (2.3 min old)</div>
+                        </div>
+                        <div class="timeline-item">
+                            <div class="timeline-time">17:32</div>
+                            <div class="timeline-text">⚠️ Modelo predice: Tráfico normal (INCORRECTO)</div>
+                        </div>
+                        <div class="timeline-item">
+                            <div class="timeline-time">17:33</div>
+                            <div class="timeline-text">Monitoreo detecta: Predicción diverge de tráfico real</div>
+                        </div>
+                        <div class="timeline-item">
+                            <div class="timeline-time">17:33</div>
+                            <div class="timeline-text">Drift score: 0.75 (Threshold: 0.5) 🔴</div>
+                        </div>
+                        <div class="timeline-item">
+                            <div class="timeline-time">17:35</div>
+                            <div class="timeline-text">Datos del accidente procesados por el sistema</div>
+                        </div>
+                        <div class="timeline-item">
+                            <div class="timeline-time">17:36</div>
+                            <div class="timeline-text">✓ Modelo reentrenado automáticamente</div>
+                        </div>
+                        <div class="timeline-item">
+                            <div class="timeline-time">17:37</div>
+                            <div class="timeline-text">✓ Predicción corregida</div>
+                        </div>
+                        <div class="timeline-item">
+                            <div class="timeline-time">17:38</div>
+                            <div class="timeline-text">2 millones de usuarios reciben ruta alternativa</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="result-box">
+                    <div class="result-title">🌟 Impacto Positivo</div>
+                    <div class="result-item">✓ Tiempo evitado en congestión: 50,000 horas/persona</div>
+                    <div class="result-item">✓ Satisfacción de usuario: +8%</div>
+                    <div class="result-item">✓ Combustible ahorrado: ~500,000 galones</div>
+                    <div class="result-item">✓ Emisiones CO2 reducidas: ~5,000 toneladas</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        function switchTab(tabName) {
+            // Hide all tabs
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Deactivate all buttons
+            document.querySelectorAll('.tab-button').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            // Show selected tab
+            document.getElementById(tabName).classList.add('active');
+            
+            // Activate clicked button
+            event.target.classList.add('active');
+        }
+        
+        function openModal(caseId) {
+            const modal = document.getElementById(`modal-${caseId}`);
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+        
+        function closeModal(event, caseId) {
+            const modal = document.getElementById(`modal-${caseId}`);
+            modal.classList.remove('active');
+            document.body.style.overflow = 'auto';
+        }
+        
+        // Close modal when pressing ESC
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                document.querySelectorAll('.modal.active').forEach(modal => {
+                    modal.classList.remove('active');
+                });
+                document.body.style.overflow = 'auto';
+            }
+        });
+    </script>
+</body>
+</html>
